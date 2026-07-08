@@ -48,20 +48,11 @@ jobs:
           echo "Repository files:"
           ls -R .
 
-      - name: Upload input data file
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: paycare-input
-          path: ./app/inputs/input_data.csv
-
-      - name: Upload output data file
-        uses: actions/upload-artifact@v4
-        with:
-          name: paycare-output
-          path: ./app/outputs/output_data.csv
-          
-      - name: Upload log file
-        uses: actions/upload-artifact@v4
-        with:
-          name: paycare-log
-          path: ./app/logs/etl.log
+          name: paycare-artifacts
+          path: |
+            ./app/inputs/input_data.csv
+            ./app/outputs/output_data.csv
+            ./app/logs/etl.log
