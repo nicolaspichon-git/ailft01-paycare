@@ -39,23 +39,25 @@ def transform_data(data):
 
 # Step 3: Load
 def load_data(data, output_file_path):
-    """Loads the transformed data into a new CSV file."""
+    """
+    Loads the transformed data into a new CSV file.
+    """
     try:
         data.to_csv(output_file_path, index=False)
-        _do_print(f"Data loaded successfully to {output_file_path}.")
+        _do_print(f"Data loaded successfully to \"{output_file_path}\".")
     except Exception as e:
         _do_print(f"Error in data loading: {e}")
 
 # Main ETL function
-def etl_process(input_file, output_file):
-    data = extract_data(input_file)
+def etl_process(input_filepath, output_filepath):
+    data = extract_data(input_filepath)
     if data is not None:
         transformed_data = transform_data(data)
         if transformed_data is not None:
-            load_data(transformed_data, output_file)
+            load_data(transformed_data, output_filepath)
 
 if __name__ == "__main__":
     import os
-    input_file = os.path.join("data", "input_data.csv")
-    output_file = os.path.join("data", "output_data.csv")
-    etl_process(input_file, output_file)
+    input_filepath = os.path.join("data", "input_data.csv")
+    output_filepath = os.path.join("data", "output_data.csv")
+    etl_process(input_filepath, output_filepath)

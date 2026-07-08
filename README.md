@@ -131,6 +131,7 @@ Don't forget to fork the repo if you want to be able to make edits! 😉
 
 # worksace
 ````
+cd [...]/paycare
 docker built -t me/paycare .
 docker run -v $(pwd)/app/data:/app/data me/paycare
 ```
