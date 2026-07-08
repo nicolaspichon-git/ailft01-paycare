@@ -51,7 +51,7 @@ jobs:
       - name: Upload input data
         uses: actions/upload-artifact@v4
         with:
-          name: paycare-output
+          name: paycare-input
           path: ./app/inputs/input_data.csv
 
       - name: Upload output data
@@ -63,5 +63,5 @@ jobs:
       - name: Upload logs
         uses: actions/upload-artifact@v4
         with:
-          name: paycare-output
+          name: paycare-log
           path: ./app/logs/etl.log
