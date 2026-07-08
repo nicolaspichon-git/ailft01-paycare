@@ -1,7 +1,26 @@
-import pandas as pd
+import pandas
+import logging
+import pathlib
 
-def _do_print(msg):
-    print(f"[Paycare:ETL] {msg}")
+# Créer le répertoire logs s'il n'existe pas
+log_dir = pathlib.Path("logs")
+log_dir.mkdir(exist_ok=True)
+
+# Configurer le logger
+logging.basicConfig(level=logging.INFO,
+                    format="[%(asctime)s][%(levelname)s][Paycare:ETL] %(message)s",
+                    handlers=[
+                        logging.FileHandler(log_dir / "etl.log", mode="w", encoding="utf-8"), 
+                        logging.StreamHandler()
+                    ])
+
+_logger = logging.getLogger(__name__)
+
+def _log_info(msg, *args, **kwargs):
+    _logger.info(msg, *args, **kwargs)
+
+def _log_error(msg, *args, **kwargs):
+    _logger.error(msg, *args, **kwargs)
 
 # Step 1: Extract
 def extract_data(file_path):
@@ -9,11 +28,11 @@ def extract_data(file_path):
     Extracts data from a CSV file.
     """
     try:
-        data = pd.read_csv(file_path)
-        _do_print("Data extraction successful.")
+        data = pandas.read_csv(file_path)
+        _log_info("Data extraction successful.")
         return data
     except Exception as e:
-        _do_print(f"Error in data extraction: {e}")
+        _log_error(f"Error in data extraction: {e}")
         return None
 
 # Step 2: Transform
@@ -31,10 +50,10 @@ def transform_data(data):
         # Calculate net salary after tax
         data_cleaned['net_salary'] = data_cleaned['salary'] - data_cleaned['tax']
         
-        _do_print("Data transformation successful.")
+        _log_info("Data transformation successful.")
         return data_cleaned
     except Exception as e:
-        _do_print(f"Error in data transformation: {e}")
+        _log_error(f"Error in data transformation: {e}")
         return None
 
 # Step 3: Load
@@ -44,9 +63,9 @@ def load_data(data, output_file_path):
     """
     try:
         data.to_csv(output_file_path, index=False)
-        _do_print(f"Data loaded successfully to \"{output_file_path}\".")
+        _log_info(f"Data loaded successfully to \"{output_file_path}\".")
     except Exception as e:
-        _do_print(f"Error in data loading: {e}")
+        _log_error(f"Error in data loading: {e}")
 
 # Main ETL function
 def etl_process(input_filepath, output_filepath):
@@ -58,6 +77,21 @@ def etl_process(input_filepath, output_filepath):
 
 if __name__ == "__main__":
     import os
-    input_filepath = os.path.join("data", "input_data.csv")
-    output_filepath = os.path.join("data", "output_data.csv")
+
+    LOCAL_OUTPUTS_DIRECTORY = "outputs"
+    LOCAL_INPUTS_DIRECTORY = "inputs"
+
+    OUTPUT_DATA_FILENAME = "output_data.csv"
+    INPUT_DATA_FILENAME = "input_data.csv"
+
+    if not os.path.exists(LOCAL_OUTPUTS_DIRECTORY):
+        os.mkdir(LOCAL_OUTPUTS_DIRECTORY)
+    
+    assert os.path.exists(LOCAL_OUTPUTS_DIRECTORY)
+    assert os.path.exists(LOCAL_INPUTS_DIRECTORY)
+
+    output_filepath = os.path.join(LOCAL_OUTPUTS_DIRECTORY, OUTPUT_DATA_FILENAME)
+    input_filepath = os.path.join(LOCAL_INPUTS_DIRECTORY, INPUT_DATA_FILENAME)
+    assert os.path.exists(input_filepath)
+
     etl_process(input_filepath, output_filepath)

@@ -2,7 +2,13 @@ name: PayCare ETL CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - '**.md'
+      - 'LICENSE'
 
 jobs:
   tests-and-build:
@@ -10,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -35,9 +41,27 @@ jobs:
           # If your repo contains a sample input_data.csv,
           # you can copy it before building or mount a volume.
           # Here we just run the container with its default behavior.
-          docker run -v $(pwd)/app/data:/app/data me/paycare
+          docker run -v $(pwd)/app:/app me/paycare
 
       - name: List files after Docker run (debugging)
         run: |
           echo "Repository files:"
           ls -R .
+
+      - name: Upload input data
+        uses: actions/upload-artifact@v4
+        with:
+          name: paycare-output
+          path: ./app/inputs/input_data.csv
+
+      - name: Upload output data
+        uses: actions/upload-artifact@v4
+        with:
+          name: paycare-output
+          path: ./app/outputs/output_data.csv
+          
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: paycare-output
+          path: ./app/logs/etl.log

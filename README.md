@@ -104,7 +104,7 @@ Now that you’ve containerized the application and written tests, your final ta
 The application code that you will be working with can be found here:
 - https://github.com/JedhaBootcamp/paycare
 
-> IMPORTANT | Don't forget to fork 🍴
+> **IMPORTANT** | Don't forget to fork 🍴
 > 
 > Don't forget to fork the repo if you want to be able to make edits! 😉
 
